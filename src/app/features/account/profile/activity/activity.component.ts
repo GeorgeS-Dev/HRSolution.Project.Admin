@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { RouterLink } from '@angular/router';
-import { FeathericonsModule } from '../../icons/feathericons/feathericons.module';
+import { FeathericonsModule } from '../../../../icons/feathericons/feathericons.module';
 
 @Component({
-    selector: 'app-user-bio',
+    selector: 'app-activity',
     standalone: true,
     imports: [RouterLink, MatCardModule, FeathericonsModule],
-    templateUrl: './user-bio.component.html',
-    styleUrl: './user-bio.component.scss'
+    templateUrl: './activity.component.html',
+    styleUrl: './activity.component.scss'
 })
-export class UserBioComponent {}
+export class ActivityComponent {}

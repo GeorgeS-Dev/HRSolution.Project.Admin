@@ -8,6 +8,9 @@ import { FeathericonsModule } from '../../../icons/feathericons/feathericons.mod
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { IdentityService } from '../../../core/services/identity/identityservice.service';
+import { ApiError } from '../../../core/services/api-response';
+import { TwoFactors } from '../../../core/services/identity/models/twoFactors';
 
 @Component({
     selector: 'app-sign-in',
@@ -17,53 +20,84 @@ import { HttpClient } from '@angular/common/http';
     styleUrl: './sign-in.component.scss'
 })
 export class SignInComponent {
+  hide: boolean = true;
+  showTwoFactor: boolean = false;
+  errorMessage: string | null = null;
+  twoFactorTypes: TwoFactors[] | null = null;
+  authForm: FormGroup;
+  twoFactorForm: FormGroup;
+  email: string = '';
+  password: string = '';
 
     constructor(
         private fb: FormBuilder,
+        private identityService: IdentityService,
         private http: HttpClient,
         private router: Router,
     ) {
+      console.log('Before submission, showTwoFactor:', this.showTwoFactor);
         this.authForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]],
             password: ['', [Validators.required, Validators.minLength(8)]],
         });
+        this.twoFactorForm = this.fb.group({
+          twoFactorCode: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern('^[0-9]{6}$')]]
+        });
     }
 
-    // Password Hide
-    hide = true;
-
-    // Form
-    authForm: FormGroup;
     onSubmit() {
         if (this.authForm.valid) {
           const formData = this.authForm.value;
-          const apiUrl = 'http://69.197.142.95:31301/api/v1/Account/SignIn';
-      
-          this.http.post(apiUrl, formData, {
-            headers: {
-              'Accept': 'text/plain',
-              'Content-Type': 'application/json'
-            }
-          }).subscribe(
-            (response: any) => {
-              // Handle success response
-              if (response && response.data.token) {
-                // Store the token in localStorage or sessionStorage
-                localStorage.setItem('accessToken', response.data.token);  // or sessionStorage.setItem('accessToken', response.token);
-      
-                console.log('Login successful, token stored:', response.data.token);
-                this.router.navigate(['/']); // Redirect after successful login
-              } else {
-                console.log('Token not found in response');
+
+          this.identityService.signIn(formData).subscribe(
+            (data) => {
+              console.log(data);
+              if(data.token) 
+              {
+                localStorage.setItem('accessToken', data.token);
+                this.router.navigate(['/']);
+              }
+
+              if(data.twoFactors) {
+                this.email = this.authForm.value.email;
+                this.password = this.authForm.value.password;
               }
             },
-            (error) => {
-              // Handle error response
-              console.log('Login failed:', error);
+            (error: ApiError) => {
+              if (error.validation) {
+                this.errorMessage = `Validation failed: ${error.validation}`;
+              } else if (error.message) {
+                this.errorMessage = `Login failed: ${error.message}`;
+              } else {
+                this.errorMessage = 'An unknown error occurred.';
+              }
             }
           );
-        } else {
-          console.log('Form is invalid. Please check the fields.');
-        }
-      }      
+      }
+    }
+    onSubmitTwoFactor() {
+      if (this.twoFactorForm.valid) {
+        const code = this.twoFactorForm.value.twoFactorCode;
+        console.log('Two-factor code:', code);
+        console.log('Email:', this.email);
+        console.log('Password:', this.password);
+
+        const twoFactorCode = this.twoFactorForm.value.twoFactorCode;
+  
+        this.identityService.sendTwoFactor(this.email, this.password, 0, twoFactorCode).subscribe(
+          (response) => {
+            console.log('Two-factor authentication initiated:', response);
+          },
+          (error: ApiError) => {
+            if (error.validation) {
+              this.errorMessage = `Validation failed: ${error.validation}`;
+            } else if (error.message) {
+              this.errorMessage = `Login failed: ${error.message}`;
+            } else {
+              this.errorMessage = 'An unknown error occurred.';
+            }
+          }
+        );
+      }
+    }
 }

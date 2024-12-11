@@ -9,7 +9,10 @@
                         Sign In
                     </h3>
                 </div>
-                <form [formGroup]="authForm" (ngSubmit)="onSubmit()">
+                <div *ngIf="errorMessage" class="alert alert-danger">
+                    {{ errorMessage }}
+                </div>
+                <form [formGroup]="authForm" (ngSubmit)="onSubmit()" *ngIf="!showTwoFactor">
                     <div class="form-group">
                         <label class="label d-block fw-medium mb-10">
                             Email Address
@@ -34,7 +37,7 @@
                             <i-feather name="lock"></i-feather>
                             <mat-label>Enter your password</mat-label>
                             <input matInput [type]="hide ? 'password' : 'text'" id="password" formControlName="password">
-                            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                            <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
                                 <span class="material-symbols-outlined">
                                     {{hide ? 'visibility_off' : 'visibility'}}
                                 </span>
@@ -47,8 +50,33 @@
                             Password must be at least 8 characters long.
                         </div>
                     </div>
+                    <!-- Submit Button -->
                     <button mat-button type="submit" [disabled]="authForm.invalid">
                         Sign In
+                    </button>
+                </form>
+                <form [formGroup]="twoFactorForm" (ngSubmit)="onSubmitTwoFactor()" *ngIf="showTwoFactor">
+                    <div class="form-group">
+                        <label class="label d-block fw-medium mb-10">
+                            Enter Two-Factor Code
+                        </label>
+                        <mat-form-field>
+                            <mat-label>Enter 6-digit code</mat-label>
+                            <input matInput type="number" formControlName="twoFactorCode" maxlength="6">
+                        </mat-form-field>
+                        <div class="error text-danger" *ngIf="twoFactorForm.get('twoFactorCode')!.hasError('required') && twoFactorForm.get('twoFactorCode')!.touched">
+                            Two-Factor Code is required.
+                        </div>
+                        <div class="error text-danger" *ngIf="twoFactorForm.get('twoFactorCode')!.hasError('minlength') && twoFactorForm.get('twoFactorCode')!.touched">
+                            Code must be 6 digits long.
+                        </div>
+                        <div class="error text-danger" *ngIf="twoFactorForm.get('twoFactorCode')!.hasError('maxlength') && twoFactorForm.get('twoFactorCode')!.touched">
+                            Code must not exceed 6 digits.
+                        </div>
+                    </div>
+                    <!-- Submit Button -->
+                    <button mat-button type="submit" [disabled]="twoFactorForm.invalid">
+                        Verify Code
                     </button>
                 </form>
             </div>

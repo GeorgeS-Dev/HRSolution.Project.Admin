@@ -63,10 +63,6 @@ import { UsersPageComponent } from './pages/users-page/users-page.component';
 import { TeamMembersComponent } from './pages/users-page/team-members/team-members.component';
 import { UsersListComponent } from './pages/users-page/users-list/users-list.component';
 import { AddUserComponent } from './pages/users-page/add-user/add-user.component';
-import { ProfilePageComponent } from './pages/profile-page/profile-page.component';
-import { PUserProfileComponent } from './pages/profile-page/p-user-profile/p-user-profile.component';
-import { PTeamsComponent } from './pages/profile-page/p-teams/p-teams.component';
-import { PProjectsComponent } from './pages/profile-page/p-projects/p-projects.component';
 import { StarterComponent } from './starter/starter.component';
 import { IconsComponent } from './icons/icons.component';
 import { MaterialSymbolsComponent } from './icons/material-symbols/material-symbols.component';
@@ -142,7 +138,6 @@ import { ChangePasswordComponent } from './settings/change-password/change-passw
 import { ConnectionsComponent } from './settings/connections/connections.component';
 import { PrivacyPolicyComponent } from './settings/privacy-policy/privacy-policy.component';
 import { TermsConditionsComponent } from './settings/terms-conditions/terms-conditions.component';
-import { MyProfileComponent } from './my-profile/my-profile.component';
 import { ApexchartsComponent } from './apexcharts/apexcharts.component';
 import { LineChartsComponent } from './apexcharts/line-charts/line-charts.component';
 import { AreaChartsComponent } from './apexcharts/area-charts/area-charts.component';
@@ -157,6 +152,7 @@ import { AuthenticationComponent } from './features/authentication/authenticatio
 import { SignInComponent } from './features/authentication/sign-in/sign-in.component';
 import { ConfirmEmailComponent } from './features/authentication/confirm-email/confirm-email.component';
 import { AuthGuard } from './core/guards/auth.guard';
+import { ProfileComponent } from './features/account/profile/profile.component';
 
 export const routes: Routes = [
     { path: '', canActivate: [AuthGuard], children: [
@@ -273,15 +269,6 @@ export const routes: Routes = [
                 {path: 'add-user', component: AddUserComponent}
             ]
         },
-        {
-            path: 'profile',
-            component: ProfilePageComponent,
-            children: [
-                {path: '', component: PUserProfileComponent},
-                {path: 'teams', component: PTeamsComponent},
-                {path: 'projects', component: PProjectsComponent}
-            ]
-        },
         {path: 'starter', component: StarterComponent},
         {
             path: 'icons',
@@ -381,7 +368,7 @@ export const routes: Routes = [
         {path: 'widgets', component: WidgetsComponent},
         {path: 'maps', component: MapsPageComponent},
         {path: 'notifications', component: NotificationsPageComponent},
-        {path: 'my-profile', component: MyProfileComponent},
+        {path: 'profile', component: ProfileComponent},
         {
             path: 'settings',
             component: SettingsComponent,
