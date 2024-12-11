@@ -12,10 +12,12 @@
         <div class="user text-center">
             <img src="images/admin.jpg" class="rounded-circle" alt="user-image">
             <h5>
-                Marcus Davis
+                {{ userClaims?.unique_name }}
             </h5>
-            <span class="d-block text-body">
-                &#64;Alvarado
+            <span class="d-block text-body"  
+            [matTooltip]="userClaims?.UserID"
+            matTooltipPosition="below">
+                {{ userClaims?.role }}
             </span>
         </div>
         <div class="buttons-list d-flex align-items-center justify-content-between">

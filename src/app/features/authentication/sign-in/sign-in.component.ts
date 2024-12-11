@@ -8,9 +8,9 @@ import { FeathericonsModule } from '../../../icons/feathericons/feathericons.mod
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { IdentityService } from '../../../core/services/identity/identityservice.service';
 import { ApiError } from '../../../core/services/api-response';
 import { TwoFactors } from '../../../core/services/identity/models/twoFactors';
+import { IdentityService } from '../../../core/services/identity/services/identityService';
 
 @Component({
     selector: 'app-sign-in',
@@ -76,28 +76,28 @@ export class SignInComponent {
       }
     }
     onSubmitTwoFactor() {
-      if (this.twoFactorForm.valid) {
-        const code = this.twoFactorForm.value.twoFactorCode;
-        console.log('Two-factor code:', code);
-        console.log('Email:', this.email);
-        console.log('Password:', this.password);
+      // if (this.twoFactorForm.valid) {
+      //   const code = this.twoFactorForm.value.twoFactorCode;
+      //   console.log('Two-factor code:', code);
+      //   console.log('Email:', this.email);
+      //   console.log('Password:', this.password);
 
-        const twoFactorCode = this.twoFactorForm.value.twoFactorCode;
+      //   const twoFactorCode = this.twoFactorForm.value.twoFactorCode;
   
-        this.identityService.sendTwoFactor(this.email, this.password, 0, twoFactorCode).subscribe(
-          (response) => {
-            console.log('Two-factor authentication initiated:', response);
-          },
-          (error: ApiError) => {
-            if (error.validation) {
-              this.errorMessage = `Validation failed: ${error.validation}`;
-            } else if (error.message) {
-              this.errorMessage = `Login failed: ${error.message}`;
-            } else {
-              this.errorMessage = 'An unknown error occurred.';
-            }
-          }
-        );
-      }
+      //   this.identityService.sendTwoFactor(this.email, this.password, 0, twoFactorCode).subscribe(
+      //     (response) => {
+      //       console.log('Two-factor authentication initiated:', response);
+      //     },
+      //     (error: ApiError) => {
+      //       if (error.validation) {
+      //         this.errorMessage = `Validation failed: ${error.validation}`;
+      //       } else if (error.message) {
+      //         this.errorMessage = `Login failed: ${error.message}`;
+      //       } else {
+      //         this.errorMessage = 'An unknown error occurred.';
+      //       }
+      //     }
+      //   );
+      // }
     }
 }

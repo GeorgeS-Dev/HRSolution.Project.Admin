@@ -2,17 +2,26 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { ApiResponse } from '../api-response';
-import { SignInResponse } from './models/signInResponse';
-import { parseIdentityResponse, parseIdentityResponseError } from '../../helpers/identityresponseparser';
+import { ApiResponse } from '../../api-response';
+import { SignInResponse } from '../models/signInResponse';
+import { parseIdentityResponse, parseIdentityResponseError } from '../../../helpers/identityResponseParser';
+import { jwtDecode } from 'jwt-decode';
+import { jwtTokenClaims } from '../models/jwtTokenClaims';
 
 @Injectable({
   providedIn: 'root',
 })
 export class IdentityService {
   private readonly apiUrl = 'http://69.197.142.95:31301/api/v1/';
+  accessToken = localStorage.getItem('accessToken') ?? "";
+  decodedJWT = this.accessToken ? jwtDecode<jwtTokenClaims>(this.accessToken) : null;
 
   constructor(private http: HttpClient) {}
+
+  getDecodedToken(): jwtTokenClaims | null {
+    console.log(this.decodedJWT);
+    return this.decodedJWT || null;
+  }
 
   signIn(credentials: any): Observable<SignInResponse> {
     return this.http.post<ApiResponse<SignInResponse>>(`${this.apiUrl}Account/SignIn`, credentials, {

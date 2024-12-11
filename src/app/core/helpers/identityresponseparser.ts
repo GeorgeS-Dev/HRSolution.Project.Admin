@@ -1,7 +1,5 @@
-import { throwError } from 'rxjs';
 import { ApiResponse, ApiError } from '../services/api-response.js';
-import { IdentityExceptionMessages } from '../services/identity/identityexceptioncodetypes.js';
-import { HttpErrorResponse } from '@angular/common/http';
+import { IdentityExceptionMessages } from '../services/identity/enums/identityExceptionCodeTypes.js';
 
 export function parseIdentityResponse<T>(response: ApiResponse<T>): T {
   if (response.succeeded) {
