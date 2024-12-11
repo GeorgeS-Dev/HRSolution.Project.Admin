@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { RouterLink } from '@angular/router';
-import { IdentityService } from '../../../../core/services/identity/services/identityService';
 import { jwtTokenClaims } from '../../../../core/services/identity/models/jwtTokenClaims';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TokenService } from '../../../../core/services/identity/services/token.service';
 
 @Component({
     selector: 'app-profile-intro',
@@ -15,10 +15,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 
 export class ProfileIntroComponent {
-userClaims: jwtTokenClaims | null;
+userClaims: jwtTokenClaims;
 
     constructor(
-        private identityService: IdentityService) {
-            this.userClaims = identityService.getDecodedToken();
+        private tokenService: TokenService) {
+            this.userClaims = tokenService.getDecodedToken();
     }
 }
