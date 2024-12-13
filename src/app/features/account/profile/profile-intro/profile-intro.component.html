@@ -20,13 +20,15 @@
                 {{ userClaims.role }}
             </span>
         </div>
-        <div class="buttons-list d-flex align-items-center justify-content-between">
-            <a routerLink="/profile" class="default-btn" mat-button>
-                View Projects
-            </a>
-            <a href="mailto:demo@contact.com" class="default-btn" mat-button>
-                Message
-            </a>
+        <div 
+        class="buttons-list d-flex align-items-center justify-content-center" 
+        fxLayoutAlign="center center">
+        <a routerLink="/profile" class="default-btn text-bg-danger" mat-button *ngIf="userClaims.TwoFactorEnabled">
+            Deactivate 2FA
+        </a>
+        <a routerLink="/profile" class="default-btn text-bg-success" mat-button *ngIf="!userClaims.TwoFactorEnabled">
+            Activate 2FA
+        </a>
         </div>
     </mat-card-content>
 </mat-card>

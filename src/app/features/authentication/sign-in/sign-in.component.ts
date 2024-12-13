@@ -17,6 +17,7 @@ import { HttpClient } from '@angular/common/http';
 import { ApiError } from '../../../core/services/api-response';
 import { TwoFactors } from '../../../core/services/identity/models/twoFactors';
 import { IdentityService } from '../../../core/services/identity/services/identity.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
     selector: 'app-sign-in',
@@ -47,6 +48,7 @@ export class SignInComponent {
     password: string = '';
 
     constructor(
+        public authService: AuthService,
         private fb: FormBuilder,
         private identityService: IdentityService,
         private http: HttpClient,
@@ -78,7 +80,7 @@ export class SignInComponent {
                 (data) => {
                     console.log(data);
                     if (data.token) {
-                        localStorage.setItem('accessToken', data.token);
+                        this.authService.setAccessToken(data.token);
                         this.router.navigate(['/']);
                     }
 

@@ -5,6 +5,7 @@ import { ToggleService } from '../header/toggle.service';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { FeathericonsModule } from '../../icons/feathericons/feathericons.module';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -16,6 +17,7 @@ import { FeathericonsModule } from '../../icons/feathericons/feathericons.module
 export class SidebarComponent {
 
     constructor(
+        public authService: AuthService,
         private toggleService: ToggleService
     ) {
         this.toggleService.isToggled$.subscribe(isToggled => {

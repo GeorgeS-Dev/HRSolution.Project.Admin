@@ -3,8 +3,9 @@ import { DatePipe, NgClass } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { FeathericonsModule } from '../../icons/feathericons/feathericons.module';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ToggleService } from './toggle.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
     selector: 'app-header',
@@ -19,8 +20,10 @@ import { ToggleService } from './toggle.service';
 export class HeaderComponent {
 
     constructor(
+        private authService: AuthService,
         public toggleService: ToggleService,
-        private datePipe: DatePipe
+        private datePipe: DatePipe,
+        private router: Router
     ) {
         this.toggleService.isToggled$.subscribe(isToggled => {
             this.isToggled = isToggled;
@@ -43,4 +46,8 @@ export class HeaderComponent {
     currentDate: Date = new Date();
     formattedDate: any;
 
+    public logOut() {
+        this.authService.clearAccessToken();
+        this.router.navigate(['/']);
+    }
 }
