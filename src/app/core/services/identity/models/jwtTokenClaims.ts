@@ -3,6 +3,6 @@ export class jwtTokenClaims {
     UserID: string = '';
     FirstName: string = '';
     LastName: string = '';
-    TwoFactorEnabled: boolean = false;
+    TwoFactorEnabled: string = 'false';
     role: string = '';
   }

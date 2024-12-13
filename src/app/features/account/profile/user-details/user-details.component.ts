@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { RouterLink } from '@angular/router';
 import { FeathericonsModule } from '../../../../icons/feathericons/feathericons.module';
 import {
     FormsModule,
@@ -13,7 +12,6 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatSelect } from '@angular/material/select';
 import { jwtTokenClaims } from '../../../../core/services/identity/models/jwtTokenClaims';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { TokenService } from '../../../../core/services/identity/services/token.service';
@@ -23,7 +21,6 @@ import { NgIf } from '@angular/common';
     selector: 'app-user-details',
     standalone: true,
     imports: [
-        RouterLink,
         MatButton,
         MatIconButton,
         FormsModule,

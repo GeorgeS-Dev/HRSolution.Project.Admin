@@ -52,6 +52,6 @@ userClaims: jwtTokenClaims;
 
     public logOut() {
         this.authService.clearAccessToken();
-        this.router.navigate(['/']);
+        this.router.navigate(['/auth/login']);
     }
 }

@@ -23,10 +23,10 @@
         <div 
         class="buttons-list d-flex align-items-center justify-content-center" 
         fxLayoutAlign="center center">
-        <a routerLink="/profile" class="default-btn text-bg-danger" mat-button *ngIf="userClaims.TwoFactorEnabled">
+        <a routerLink="/profile" class="default-btn text-bg-danger" mat-button *ngIf="userClaims.TwoFactorEnabled === 'true'">
             Deactivate 2FA
         </a>
-        <a routerLink="/profile" class="default-btn text-bg-success" mat-button *ngIf="!userClaims.TwoFactorEnabled">
+        <a (click)="openTwoFactorDialog()" class="default-btn text-bg-success" mat-button *ngIf="userClaims.TwoFactorEnabled === 'false'">
             Activate 2FA
         </a>
         </div>

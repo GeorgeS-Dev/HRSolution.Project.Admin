@@ -12,7 +12,7 @@ import { RouterOutlet, Router, NavigationCancel, NavigationEnd, RouterLink } fro
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [RouterOutlet, CommonModule, RouterLink, SidebarComponent, HeaderComponent, FooterComponent],
+    imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
     providers: [

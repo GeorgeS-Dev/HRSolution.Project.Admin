@@ -9,11 +9,10 @@ import {
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { RouterLink, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { FeathericonsModule } from '../../../icons/feathericons/feathericons.module';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgIf } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { ApiError } from '../../../core/services/api-response';
 import { TwoFactors } from '../../../core/services/identity/models/twoFactors';
 import { IdentityService } from '../../../core/services/identity/services/identity.service';
@@ -23,7 +22,6 @@ import { AuthService } from '../../../core/services/auth.service';
     selector: 'app-sign-in',
     standalone: true,
     imports: [
-        RouterLink,
         MatButton,
         MatIconButton,
         FormsModule,
@@ -51,7 +49,6 @@ export class SignInComponent {
         public authService: AuthService,
         private fb: FormBuilder,
         private identityService: IdentityService,
-        private http: HttpClient,
         private router: Router
     ) {
         console.log('Before submission, showTwoFactor:', this.showTwoFactor);
