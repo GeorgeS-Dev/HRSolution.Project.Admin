@@ -45,6 +45,10 @@ TwoFAActive: boolean = false;
             width: '550px',
         });
     }
+
+    openDisableTwoFactorDialog(): void {
+        
+    }
 }
 
 @Component({
@@ -70,11 +74,7 @@ export class TwoFactorWarnDialog {
                 });
             },
             (error: ApiError) => {
-                // Show Error Dialog
-                // this.dialog.open(TwoFactorCodeDialog, {
-                //     width: '550px',
-                //     data: error
-                // });
+                // Show Unknown Error
             }
         );
     }
@@ -109,6 +109,7 @@ isCodeInvalid: boolean = false;
                 this.dialog.open(TwoFactorCodeConfirmDialog, {
                     width: '550px'
                 });
+                // Refresh user token after this
             },
             (error: ApiError) => {
                 this.isCodeInvalid = true;

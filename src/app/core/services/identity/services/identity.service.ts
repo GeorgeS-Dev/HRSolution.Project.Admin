@@ -104,4 +104,22 @@ export class IdentityService {
     );
   }
   
+  disableTwoFactor(): Observable<string> {
+    const headers = new HttpHeaders()
+      .set('Accept', 'text/plain')
+      .set('Content-Type', 'application/json')
+      .set('Authorization', `Bearer ${this.authService.getAccessToken()}`); // Add Authorization header
+  
+    return this.http.post<ApiResponse<string>>(
+      `${this.apiUrl}Profile/TwoFactorDisable`,
+      { headers }
+    ).pipe(
+      map((response) => parseIdentityResponse<string>(response)),
+      catchError((error) => {
+        const apiError = parseIdentityResponseError(error.error);
+        return throwError(() => apiError);
+      })
+    );
+  }
+  
 }
