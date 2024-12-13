@@ -51,7 +51,6 @@ export class SignInComponent {
         private identityService: IdentityService,
         private router: Router
     ) {
-        console.log('Before submission, showTwoFactor:', this.showTwoFactor);
         this.authForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]],
             password: ['', [Validators.required, Validators.minLength(8)]],
@@ -72,10 +71,9 @@ export class SignInComponent {
     onSubmit() {
         if (this.authForm.valid) {
             const formData = this.authForm.value;
-
+            this.errorMessage = "";
             this.identityService.signIn(formData).subscribe(
                 (data) => {
-                    console.log(data);
                     if (data.token) {
                         this.authService.setAccessToken(data.token);
                         this.router.navigate(['/']);
@@ -84,6 +82,7 @@ export class SignInComponent {
                     if (data.twoFactors) {
                         this.email = this.authForm.value.email;
                         this.password = this.authForm.value.password;
+                        this.showTwoFactor = true;
                     }
                 },
                 (error: ApiError) => {
@@ -99,26 +98,27 @@ export class SignInComponent {
         }
     }
     onSubmitTwoFactor() {
-        // if (this.twoFactorForm.valid) {
-        //   const code = this.twoFactorForm.value.twoFactorCode;
-        //   console.log('Two-factor code:', code);
-        //   console.log('Email:', this.email);
-        //   console.log('Password:', this.password);
-        //   const twoFactorCode = this.twoFactorForm.value.twoFactorCode;
-        //   this.identityService.sendTwoFactor(this.email, this.password, 0, twoFactorCode).subscribe(
-        //     (response) => {
-        //       console.log('Two-factor authentication initiated:', response);
-        //     },
-        //     (error: ApiError) => {
-        //       if (error.validation) {
-        //         this.errorMessage = `Validation failed: ${error.validation}`;
-        //       } else if (error.message) {
-        //         this.errorMessage = `Login failed: ${error.message}`;
-        //       } else {
-        //         this.errorMessage = 'An unknown error occurred.';
-        //       }
-        //     }
-        //   );
-        // }
+        if (this.twoFactorForm.valid) {
+            const code = this.twoFactorForm.value.twoFactorCode;
+
+            this.identityService.confirmTwoFactorSignIn(this.email, this.password, code).subscribe(
+                (data) => {
+                    if (data) {
+                        this.authService.setAccessToken(data);
+                        this.router.navigate(['/']);
+                    }
+                },
+                (error: ApiError) => {
+                    this.showTwoFactor = false;
+                    if (error.validation) {
+                        this.errorMessage = `Validation failed: ${error.validation}`;
+                    } else if (error.message) {
+                        this.errorMessage = `Login failed: ${error.message}`;
+                    } else {
+                        this.errorMessage = 'An unknown error occurred.';
+                    }
+                }
+            );
+        }
     }
 }

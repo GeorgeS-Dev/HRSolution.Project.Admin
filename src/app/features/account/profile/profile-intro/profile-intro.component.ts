@@ -64,7 +64,6 @@ export class TwoFactorWarnDialog {
         this.dialog.closeAll();
         this.identityService.twoFactorEnableSend().subscribe(
             (data) => {
-                console.log(data);
                 this.dialog.open(TwoFactorCodeDialog, {
                     width: '550px',
                     data: data

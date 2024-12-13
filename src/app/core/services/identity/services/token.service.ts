@@ -10,7 +10,6 @@ export class TokenService {
     decodedJWT = jwtDecode<jwtTokenClaims>(this.accessToken);
   
     getDecodedToken(): jwtTokenClaims {
-      console.log(this.decodedJWT);
       return this.decodedJWT;
     }
 }

@@ -33,21 +33,25 @@ export class IdentityService {
     );
   }
 
-  sendTwoFactor(email: string, password: string, type: number, code: string): Observable<any> {
-    const payload = {
+  confirmTwoFactorSignIn(email: string, password: string, code: string, type: number = 0): Observable<any> {
+    const body = {
       email: email,
       password: password,
-      type: 0,
+      type: type,
+      code: String(code)
     };
 
     return this.http
-      .post(`${this.apiUrl}Account/TwoFactorSend`, payload, {
+      .post<ApiResponse<string>>(`${this.apiUrl}Account/TwoFactorConfirm`, 
+        body, 
+        {
         headers: {
-          Accept: 'text/plain',
+          Accept: 'application/json',
           'Content-Type': 'application/json',
         },
       })
       .pipe(
+        map((response) => parseIdentityResponse<string>(response)),
         catchError((error) => {
           const apiError = parseIdentityResponseError(error.error);
           return throwError(() => apiError);
