@@ -6,6 +6,8 @@ import { FeathericonsModule } from '../../icons/feathericons/feathericons.module
 import { Router, RouterLink } from '@angular/router';
 import { ToggleService } from './toggle.service';
 import { AuthService } from '../../core/services/auth.service';
+import { TokenService } from '../../core/services/identity/services/token.service';
+import { jwtTokenClaims } from '../../core/services/identity/models/jwtTokenClaims';
 
 @Component({
     selector: 'app-header',
@@ -18,9 +20,10 @@ import { AuthService } from '../../core/services/auth.service';
     ]
 })
 export class HeaderComponent {
-
+userClaims: jwtTokenClaims;
     constructor(
         private authService: AuthService,
+        private tokenService: TokenService,
         public toggleService: ToggleService,
         private datePipe: DatePipe,
         private router: Router
@@ -29,6 +32,7 @@ export class HeaderComponent {
             this.isToggled = isToggled;
         });
         this.formattedDate = this.datePipe.transform(this.currentDate, 'dd MMMM yyyy');
+        this.userClaims = tokenService.getDecodedToken();
     }
 
     // Toggle Service

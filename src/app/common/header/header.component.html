@@ -216,41 +216,21 @@
                         <img src="images/admin.jpg" class="rounded-circle" alt="admin-image">
                         <div class="title">
                             <a routerLink="/profile" class="d-inline-block fw-medium">
-                                Marcus Davis
+                                {{userClaims.FirstName}}
+                                {{userClaims.LastName}}
                             </a>
                             <span class="designation d-block text-body">
-                                Admin
+                                {{userClaims.role}}
                             </span>
                         </div>
                     </div>
                     <ul class="menu-body pl-0 mb-0 mt-0 list-unstyled">
                         <li class="position-relative transition fw-medium">
                             <i class="material-symbols-outlined">
-                                person
-                            </i>
-                            My Profile
-                            <a routerLink="/profile" class="link-btn d-block position-absolute left-0 right-0 top-0 bottom-0 z-1"></a>
-                        </li>
-                        <li class="position-relative transition fw-medium">
-                            <i class="material-symbols-outlined">
-                                settings
-                            </i>
-                            Settings
-                            <a routerLink="/settings" class="link-btn d-block position-absolute left-0 right-0 top-0 bottom-0 z-1"></a>
-                        </li>
-                        <li class="position-relative transition fw-medium">
-                            <i class="material-symbols-outlined">
-                                info
-                            </i>
-                            Support
-                            <a routerLink="/settings/connections" class="link-btn d-block position-absolute left-0 right-0 top-0 bottom-0 z-1"></a>
-                        </li>
-                        <li class="position-relative transition fw-medium">
-                            <i class="material-symbols-outlined">
                                 logout
                             </i>
                             Logout
-                            <a (click)="logOut()" class="link-btn d-block position-absolute left-0 right-0 top-0 bottom-0 z-1"></a>
+                            <a (click)="logOut()" class="link-btn d-block position-absolute left-0 right-0 top-0 bottom-0 z-1 cursor-pointer"></a>
                         </li>
                     </ul>
                 </mat-menu>
