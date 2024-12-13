@@ -47,7 +47,9 @@ TwoFAActive: boolean = false;
     }
 
     openDisableTwoFactorDialog(): void {
-        
+        this.dialog.open(TwoFactorDisableDialog, {
+            width: '550px',
+        });
     }
 }
 
@@ -131,4 +133,32 @@ export class TwoFactorCodeConfirmDialog {
         public dialog: MatDialog,
         private identityService: IdentityService
     ) {}
+}
+
+@Component({
+    selector: 'TwoFactorDisableDialog',
+    templateUrl: './dialogs/twoFactorDisableDialog.html',
+    standalone: true,
+    imports: [MatButtonModule, MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent, NgIf],
+})
+export class TwoFactorDisableDialog {
+hasDisabled: boolean = false;
+hasError: boolean = false;
+    constructor(
+        public dialogRef: MatDialogRef<TwoFactorDisableDialog>,
+        public dialog: MatDialog,
+        private identityService: IdentityService
+    ) {}
+
+    DisableTwoFactor() : void {
+
+        this.identityService.disableTwoFactor().subscribe(
+            () => {
+                this.hasDisabled = true;
+            },
+            (error: ApiError) => {
+                this.hasError = true;
+            }
+        );
+    }
 }
