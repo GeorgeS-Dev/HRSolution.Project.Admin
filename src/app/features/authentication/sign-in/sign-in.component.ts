@@ -17,6 +17,8 @@ import { ApiError } from '../../../core/services/api-response';
 import { TwoFactors } from '../../../core/services/identity/models/twoFactors';
 import { IdentityService } from '../../../core/services/identity/services/identity.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { jwtDecode } from 'jwt-decode';
+import { jwtTokenClaims } from '../../../core/services/identity/models/jwtTokenClaims';
 
 @Component({
     selector: 'app-sign-in',
@@ -75,6 +77,11 @@ export class SignInComponent {
             this.identityService.signIn(formData).subscribe(
                 (data) => {
                     if (data.token) {
+                        const decodedJWT = jwtDecode<jwtTokenClaims>(data.token);
+                        if(decodedJWT.role !== "Admin") {
+                            this.errorMessage = `Login failed: Permission Denied`;
+                            return;
+                        }
                         this.authService.setAccessToken(data.token);
                         this.router.navigate(['/']);
                     }
