@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { ApiResponse } from '../api-response';
-import { parseIdentityResponse, parseIdentityResponseError } from '../../helpers/identityResponseParser';
+import { parseIdentityResponse, parseIdentityResponseError } from '../../helpers/identityresponseparser';
 
 @Injectable({
   providedIn: 'root',

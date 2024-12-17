@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-import { ApiResponse } from '../../api-response';
+import { Observable } from 'rxjs';
 import { SignInResponse } from '../models/signInResponse';
-import { parseIdentityResponse, parseIdentityResponseError } from '../../../helpers/identityResponseParser';
 import { AuthService } from '../../auth.service';
 import { environment } from '../../../../../environments/environment';
 import { HttpService } from '../../http/http.service';

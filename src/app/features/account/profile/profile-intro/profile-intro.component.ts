@@ -17,7 +17,7 @@ import {
 } from '@angular/material/dialog';
 import { IdentityService } from '../../../../core/services/identity/services/identity.service';
 import { ApiError } from '../../../../core/services/api-response';
-import { QRCodeComponent } from 'angularx-qrcode';
+import { QRCodeModule  } from 'angularx-qrcode';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, NgModel, NgModelGroup } from '@angular/forms';
 
@@ -56,7 +56,7 @@ TwoFAActive: boolean = false;
 
 @Component({
     selector: 'TwoFactorWarnDialog',
-    templateUrl: './dialogs/TwoFactorWarnDialog.html',
+    templateUrl: './dialogs/twoFactorWarnDialog.html',
     standalone: true,
     imports: [MatButtonModule, MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent],
 })
@@ -88,7 +88,7 @@ export class TwoFactorWarnDialog {
     templateUrl: './dialogs/twoFactorCodeDialog.html',
     styleUrl: './profile-intro.component.scss',
     standalone: true,
-    imports: [MatButtonModule, MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent, QRCodeComponent, MatFormFieldModule, FormsModule, NgClass, NgIf ],
+    imports: [MatButtonModule, MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent, QRCodeModule, MatFormFieldModule, FormsModule, NgClass, NgIf ],
 })
 export class TwoFactorCodeDialog {
 twoFactorString: string = "";

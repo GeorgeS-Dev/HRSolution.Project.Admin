@@ -1,5 +1,5 @@
-# Use the official Node.js image as the base
-FROM node:22.12.0 as builder
+# Base image
+FROM node:18-alpine AS builder
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -8,17 +8,18 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Install dependencies
-RUN npm install -g @angular/cli@18.2.0 \
-    && npm install
+RUN npm install -g @angular/cli@18.2.0
+RUN npm install
 
 # Copy the Angular application code to the container
 COPY . .
 
 # Build the Angular application for production
-RUN ng build --configuration=production
+ARG MyEnv
+RUN ng build --configuration=$MyEnv
 
 # Use a lightweight web server to serve the application
-FROM nginx:stable-alpine
+FROM nginx:alpine AS production
 
 # Copy the Angular app build from the builder stage
 COPY --from=builder /app/dist/hrprojectAdmin /usr/share/nginx/html
