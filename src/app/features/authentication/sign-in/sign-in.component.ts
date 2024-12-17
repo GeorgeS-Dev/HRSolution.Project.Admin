@@ -74,8 +74,8 @@ export class SignInComponent {
             this.errorMessage = "";
             this.identityService.signIn(formData).subscribe(
                 (data) => {
-                    if (data.token) {
-                        this.authService.setAccessToken(data.token);
+                    if (data.accessToken) {
+                        this.authService.setAccessToken(data.accessToken);
                         this.router.navigate(['/']);
                     }
 
