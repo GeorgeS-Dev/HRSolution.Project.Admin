@@ -43,6 +43,61 @@
     }
 }
 
+::ng-deep {
+    .mat-form-field {
+        display: block;
+        .mat-mdc-form-field-focus-overlay {
+            display: none;
+        }
+    }
+    .mdc-text-field--filled {
+        &:not(.mdc-text-field--disabled) {
+            background-color: #f5f7fa;
+        }
+    }
+    .mdc-text-field--focused {
+        &:not(.mdc-text-field--disabled) {
+            .mdc-floating-label {
+                color: var(--primaryColor) !important;
+            }
+        }
+    }
+    .mat-mdc-text-field-wrapper {
+        border-radius: 10px;
+        padding: 0 15px 0 60px;
+        border: 1px solid #f5f7fa;
+    }
+    .mat-mdc-icon-button {
+        &.mat-mdc-button-base {
+            padding: 12px 0 12px 0;
+            margin-right: -15px;
+        }
+    }
+    .mdc-line-ripple {
+        display: none;
+    }
+    .mdc-text-field {
+        &:not(.mdc-text-field--disabled) {
+            .mdc-floating-label {
+                color: #a9a9c8;
+            }
+        }
+    }
+    i-feather {
+        top: 15.5px;
+        left: -40px;
+        width: 25px;
+        line-height: 1;
+        position: absolute;
+        color: var(--blackColor);
+    }
+    .mat-mdc-form-field-bottom-align {
+        &::before {
+            display: none;
+        }
+    }
+}
+
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 

@@ -1,4 +1,4 @@
-import { Component, Inject, NgModule } from '@angular/core';
+import { Component, Inject, NgModule, Injector } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { RouterLink } from '@angular/router';
@@ -34,10 +34,11 @@ userClaims: jwtTokenClaims;
 TwoFAActive: boolean = false;
 
     constructor(
-        private tokenService: TokenService,
+        private injector: Injector,
         public dialog: MatDialog
     ) {
-            this.userClaims = this.tokenService.getDecodedToken();
+        const tokenService = this.injector.get(TokenService);
+        this.userClaims = tokenService.getDecodedToken();
     }
 
     openTwoFactorDialog(): void {

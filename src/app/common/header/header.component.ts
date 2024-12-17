@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { DatePipe, NgClass } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,19 +20,22 @@ import { jwtTokenClaims } from '../../core/services/identity/models/jwtTokenClai
     ]
 })
 export class HeaderComponent {
-userClaims: jwtTokenClaims;
+    userClaims: jwtTokenClaims;
+    private tokenService: TokenService;
+
     constructor(
         private authService: AuthService,
-        private tokenService: TokenService,
         public toggleService: ToggleService,
         private datePipe: DatePipe,
-        private router: Router
+        private router: Router,
+        private injector: Injector
     ) {
+        this.tokenService = this.injector.get(TokenService);
+        this.userClaims = this.tokenService.getDecodedToken();
         this.toggleService.isToggled$.subscribe(isToggled => {
             this.isToggled = isToggled;
         });
         this.formattedDate = this.datePipe.transform(this.currentDate, 'dd MMMM yyyy');
-        this.userClaims = tokenService.getDecodedToken();
     }
 
     // Toggle Service

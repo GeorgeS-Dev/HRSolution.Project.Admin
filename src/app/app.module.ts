@@ -1,10 +1,13 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser'; // Required for browser-based apps
-import { AppComponent } from './app.component'; // Your main component
+import { BrowserModule } from '@angular/platform-browser'; 
+import { TokenService } from './core/services/identity/services/token.service';
 
 @NgModule({
   imports: [
     BrowserModule
+  ],
+  providers: [
+    TokenService
   ]
 })
 export class AppModule { }

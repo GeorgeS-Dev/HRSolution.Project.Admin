@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { FeathericonsModule } from '../../../../icons/feathericons/feathericons.module';
 import {
@@ -41,7 +41,8 @@ export class UserDetailsComponent {
     userClaims: jwtTokenClaims;
     profileForm: FormGroup;
 
-    constructor(private tokenService: TokenService, private fb: FormBuilder) {
+    constructor(private injector: Injector, private fb: FormBuilder) {
+        const tokenService = this.injector.get(TokenService);
         this.userClaims = tokenService.getDecodedToken();
         this.profileForm = this.fb.group({
             password: ['', 
