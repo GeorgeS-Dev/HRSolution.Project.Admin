@@ -25,7 +25,7 @@ WORKDIR /app
 FROM nginx:alpine
 
 # Copy the Angular build from the builder stage to NGINX
-COPY --from=builder /app/dist/hrprojectAdmin /usr/share/nginx/html
+COPY --from=builder /app/dist/hrprojectAdmin/browser /usr/share/nginx/html
 
 # Install Node.js in the final stage to support backend operations
 RUN apk add --no-cache nodejs npm
