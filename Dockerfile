@@ -1,30 +1,36 @@
-# Base image
-FROM node:18-alpine AS builder
+# Stage 1: Build Angular 18 App
+FROM node:21-alpine AS builder
 
-# Set the working directory inside the container
+# Install Angular CLI globally
+RUN npm install -g @angular/cli@18.0.0
+
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
-COPY package.json package-lock.json ./
+# Copy package files to install dependencies
+COPY package*.json ./
 
 # Install dependencies
-RUN npm install -g @angular/cli@18.2.0
 RUN npm install
 
-# Copy the Angular application code to the container
+# Copy the rest of the application files
 COPY . .
 
-# Build the Angular application for production
+# Build the Angular app for production
 ARG MyEnv
 RUN ng build --configuration=$MyEnv
 
-# Use a lightweight web server to serve the application
-FROM nginx:alpine AS production
+WORKDIR /app
 
-# Copy the Angular app build from the builder stage
+# Stage 3: Combine Angular and Node.js with NGINX
+FROM nginx:alpine
+
+# Copy the Angular build from the builder stage to NGINX
 COPY --from=builder /app/dist/hrprojectAdmin /usr/share/nginx/html
 
-# Expose port 80 for the application
+# Install Node.js in the final stage to support backend operations
+RUN apk add --no-cache nodejs npm
+
+# Expose the necessary ports
 EXPOSE 80
 
 # Start Nginx server
