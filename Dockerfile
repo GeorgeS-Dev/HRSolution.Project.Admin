@@ -21,7 +21,7 @@ RUN ng build --configuration=production
 FROM nginx:stable-alpine
 
 # Copy the Angular app build from the builder stage
-COPY --from=builder /app/dist/<your-angular-project-name> /usr/share/nginx/html
+COPY --from=builder /app/dist/hrprojectAdmin /usr/share/nginx/html
 
 # Expose port 80 for the application
 EXPOSE 80
