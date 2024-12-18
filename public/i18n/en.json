@@ -18,5 +18,6 @@
   "VERIFY_CODE_BUTTON": "Verify Code",
   "VALIDATION_FAILED": "Validation failed. Please correct the errors and try again.",
   "LOGIN_FAILED": "Login failed: {{message}}",
-  "UNKNOWN_ERROR": "An unknown error occurred."
+  "UNKNOWN_ERROR": "An unknown error occurred.",
+  "LOGIN_SUCCEEDED": "Login succeeded"
 }

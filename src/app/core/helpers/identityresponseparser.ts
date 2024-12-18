@@ -35,6 +35,7 @@ export function parseIdentityResponseError(response: ApiResponse<null>, snackBar
         apiError.message = 'Invalid validation error format';
         snackBar.open(apiError.message, 'Close', {
           duration: 5000,
+          panelClass: ['snackbar-error'],
           horizontalPosition: 'left',
           verticalPosition: 'top',
         });
@@ -44,6 +45,7 @@ export function parseIdentityResponseError(response: ApiResponse<null>, snackBar
       apiError.message = IdentityExceptionMessages[response.errorCode] || 'Unknown error';
       snackBar.open(apiError.message, 'Close', {
         duration: 5000,
+        panelClass: ['snackbar-error'],
         horizontalPosition: 'left',
         verticalPosition: 'top',
       });
@@ -65,6 +67,7 @@ export function parseIdentityResponseError(response: ApiResponse<null>, snackBar
       apiError.message = response.message;
       snackBar.open(apiError.message, 'Close', {
         duration: 5000,
+        panelClass: ['snackbar-error'],
         horizontalPosition: 'left',
         verticalPosition: 'top',
       });
@@ -75,6 +78,7 @@ export function parseIdentityResponseError(response: ApiResponse<null>, snackBar
   apiError.message = 'An unknown error occurred.';
   snackBar.open(apiError.message, 'Close', {
     duration: 5000,
+    panelClass: ['snackbar-error'],
     horizontalPosition: 'left',
     verticalPosition: 'top',
   });

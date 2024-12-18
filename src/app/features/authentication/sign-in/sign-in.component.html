@@ -12,7 +12,10 @@
                 <div *ngIf="errorMessage" class="alert alert-danger">
                     {{ errorMessage }}
                 </div>
-                <form [formGroup]="authForm" (ngSubmit)="onSubmit()" *ngIf="!showTwoFactor">
+                <div *ngIf="loading" class="loader">
+                    <mat-spinner></mat-spinner>
+                </div>
+                <form [formGroup]="authForm" (ngSubmit)="onSubmit()" *ngIf="!showTwoFactor && !loading">
                     <div class="form-group">
                         <label class="label d-block fw-medium mb-10">
                             {{ 'EMAIL_ADDRESS' | translate }}
@@ -64,7 +67,7 @@
                         {{ 'SIGN_IN_BUTTON' | translate }}
                     </button>
                 </form>
-                <form [formGroup]="twoFactorForm" (ngSubmit)="onSubmitTwoFactor()" *ngIf="showTwoFactor">
+                <form [formGroup]="twoFactorForm" (ngSubmit)="onSubmitTwoFactor()" *ngIf="showTwoFactor && !loading">
                     <div class="form-group">
                         <label class="label d-block fw-medium mb-10">
                             {{ 'TWO_FACTOR_CODE' | translate }}

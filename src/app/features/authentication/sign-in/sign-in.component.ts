@@ -21,6 +21,9 @@ import { SignInResponse } from '../../../core/services/identity/models/signInRes
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorHandlerService } from '../../../core/services/http/error-handler.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { LoadingService } from '../../../core/services/loading.service';
 
 @Component({
     selector: 'app-sign-in',
@@ -35,7 +38,8 @@ import { ErrorHandlerService } from '../../../core/services/http/error-handler.s
         MatCheckboxModule,
         ReactiveFormsModule,
         NgIf,
-        TranslateModule
+        TranslateModule,
+        MatProgressSpinnerModule
     ],
     templateUrl: './sign-in.component.html',
     styleUrl: './sign-in.component.scss'
@@ -49,6 +53,7 @@ export class SignInComponent {
     twoFactorForm: FormGroup;
     email: string = '';
     password: string = '';
+    loading: boolean = false;
 
     constructor(
         public authService: AuthService,
@@ -56,7 +61,9 @@ export class SignInComponent {
         private identityService: IdentityService,
         private router: Router,
         private translate: TranslateService,
-        private errorHandlerService: ErrorHandlerService
+        private errorHandlerService: ErrorHandlerService,
+        private snackBar: MatSnackBar,
+        private loadingService: LoadingService
     ) {
         this.authForm = this.createAuthForm();
         this.twoFactorForm = this.createTwoFactorForm();
@@ -89,11 +96,19 @@ export class SignInComponent {
 
     onSubmit() {
         if (this.authForm.valid) {
+            this.loadingService.show();
             const formData = this.authForm.value;
             this.errorMessage = "";
             this.identityService.signIn(formData).subscribe(
-                (data: SignInResponse) => this.handleSignInResponse(data),
-                (error: ApiError) => this.handleError(error)
+                (data: SignInResponse) => {
+                    this.loadingService.hide();
+                    this.handleSignInResponse(data);
+                },
+                (error: ApiError) => {
+                    this.loadingService.hide();
+                    this.authForm.reset();
+                    this.handleError(error);
+                }
             );
         }
     }
@@ -101,6 +116,12 @@ export class SignInComponent {
     private handleSignInResponse(data: SignInResponse) {
         if (data.accessToken) {
             this.authService.setAccessToken(data.accessToken);
+            this.snackBar.open(this.translate.instant('LOGIN_SUCCEEDED'), 'Close', {
+                duration: 5000,
+                panelClass: ['snackbar-success'],
+                horizontalPosition: 'left',
+                verticalPosition: 'top',
+            });
             this.router.navigate(['/']);
         }
 
@@ -113,10 +134,17 @@ export class SignInComponent {
 
     onSubmitTwoFactor() {
         if (this.twoFactorForm.valid) {
+            this.loadingService.show();
             const code = this.twoFactorForm.value.twoFactorCode;
             this.identityService.confirmTwoFactorSignIn(this.email, this.password, code).subscribe(
-                (data: SignInResponse) => this.handleTwoFactorResponse(data),
-                (error: ApiError) => this.handleTwoFactorError(error)
+                (data: SignInResponse) => {
+                    this.loadingService.hide();
+                    this.handleTwoFactorResponse(data);
+                },
+                (error: ApiError) => {
+                    this.loadingService.hide();
+                    this.handleTwoFactorError(error);
+                }
             );
         }
     }
@@ -124,16 +152,23 @@ export class SignInComponent {
     private handleTwoFactorResponse(data: SignInResponse) {
         if (data.accessToken) {
             this.authService.setAccessToken(data.accessToken);
+            this.snackBar.open(this.translate.instant('LOGIN_SUCCEEDED'), 'Close', {
+                duration: 5000,
+                panelClass: ['snackbar-success'],
+                horizontalPosition: 'left',
+                verticalPosition: 'top',
+            });
             this.router.navigate(['/']);
         }
     }
 
     private handleTwoFactorError(error: ApiError) {
         this.showTwoFactor = false;
+        this.twoFactorForm.reset();
         this.handleError(error);
     }
 
     private handleError(error: ApiError) {
-        this.errorMessage = this.errorHandlerService.handleError(error, this.authForm);
+        //this.errorMessage = this.errorHandlerService.handleError(error, this.authForm);
     }
 }

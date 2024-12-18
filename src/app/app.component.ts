@@ -10,11 +10,13 @@ import { CommonModule, Location, LocationStrategy, PathLocationStrategy } from '
 import { RouterOutlet, Router, NavigationCancel, NavigationEnd, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateService } from '@ngx-translate/core';
+import { LoadingService } from './core/services/loading.service';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent, TranslateModule],
+    imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent, TranslateModule, MatProgressSpinner],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
     providers: [
@@ -28,17 +30,22 @@ export class AppComponent {
     title = 'Trinta -  Angular 18 Material Design Admin Dashboard Template';
     routerSubscription: any;
     location: any;
+    loading: boolean = false;
 
     constructor(private translate: TranslateService,
         public router: Router,
         public toggleService: ToggleService,
+        private loadingService: LoadingService,
         @Inject(PLATFORM_ID) private platformId: Object
     ) { 
-        this.translate.addLangs(['de', 'en']);
+        this.translate.addLangs(['en']);
         this.translate.setDefaultLang('en');
         this.translate.use('en');
         this.toggleService.isToggled$.subscribe(isToggled => {
         this.isToggled = isToggled;
+        });
+        this.loadingService.loading$.subscribe((isLoading) => {
+            this.loading = isLoading;
         });
     }
 
