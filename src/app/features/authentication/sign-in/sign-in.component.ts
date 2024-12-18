@@ -17,6 +17,7 @@ import { ApiError } from '../../../core/services/api-response';
 import { TwoFactors } from '../../../core/services/identity/models/twoFactors';
 import { IdentityService } from '../../../core/services/identity/services/identity.service';
 import { AuthService } from '../../../core/services/identity/services/auth.service';
+import { TokenService } from '../../../core/services/identity/services/token.service';
 import { SignInResponse } from '../../../core/services/identity/models/signInResponse';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -42,7 +43,7 @@ import { LoadingService } from '../../../core/services/loading.service';
         MatProgressSpinnerModule
     ],
     templateUrl: './sign-in.component.html',
-    styleUrl: './sign-in.component.scss'
+    styleUrls: ['./sign-in.component.scss']
 })
 export class SignInComponent {
     hide: boolean = true;
@@ -59,6 +60,7 @@ export class SignInComponent {
         public authService: AuthService,
         private fb: FormBuilder,
         private identityService: IdentityService,
+        private tokenService: TokenService,
         private router: Router,
         private translate: TranslateService,
         private errorHandlerService: ErrorHandlerService,
@@ -116,6 +118,8 @@ export class SignInComponent {
     private handleSignInResponse(data: SignInResponse) {
         if (data.accessToken) {
             this.authService.setAccessToken(data.accessToken);
+            this.tokenService.setToken(data.accessToken, data.accessTokenExpires, data.refreshToken, data.refreshTokenExpires); // Set the tokens in TokenService
+            this.authService.onLogin.emit(); 
             this.snackBar.open(this.translate.instant('LOGIN_SUCCEEDED'), 'Close', {
                 duration: 5000,
                 panelClass: ['snackbar-success'],
@@ -152,6 +156,8 @@ export class SignInComponent {
     private handleTwoFactorResponse(data: SignInResponse) {
         if (data.accessToken) {
             this.authService.setAccessToken(data.accessToken);
+            this.tokenService.setToken(data.accessToken, data.accessTokenExpires, data.refreshToken, data.refreshTokenExpires); // Set the tokens in TokenService
+            this.authService.onLogin.emit(); 
             this.snackBar.open(this.translate.instant('LOGIN_SUCCEEDED'), 'Close', {
                 duration: 5000,
                 panelClass: ['snackbar-success'],

@@ -35,9 +35,16 @@ export class HeaderComponent implements OnInit {
             this.isToggled = isToggled;
         });
         this.formattedDate = this.datePipe.transform(this.currentDate, 'dd MMMM yyyy');
+        this.authService.onLogin.subscribe(() => {
+            this.reloadUserClaims();
+        });
     }
 
     ngOnInit(): void {
+        this.reloadUserClaims();
+    }
+
+    private reloadUserClaims(): void {
         const decodedToken = this.tokenService.getDecodedToken();
         if (decodedToken) {
             this.userClaims = decodedToken;
@@ -61,6 +68,7 @@ export class HeaderComponent implements OnInit {
 
     public logOut() {
         this.authService.clearAccessToken();
+        this.tokenService.removeToken();
         this.router.navigate(['/auth/login']);
     }
 }

@@ -74,7 +74,7 @@
                         </label>
                         <mat-form-field>
                             <mat-label>{{ 'ENTER_TWO_FACTOR_CODE' | translate }}</mat-label>
-                            <input matInput type="number" formControlName="twoFactorCode" maxlength="6">
+                            <input matInput type="number" formControlName="twoFactorCode" minlength="6" maxlength="6">
                         </mat-form-field>
                         <div class="error text-danger" *ngIf="twoFactorForm.get('twoFactorCode')!.hasError('required') && twoFactorForm.get('twoFactorCode')!.touched">
                             {{ 'TWO_FACTOR_CODE_REQUIRED' | translate }}

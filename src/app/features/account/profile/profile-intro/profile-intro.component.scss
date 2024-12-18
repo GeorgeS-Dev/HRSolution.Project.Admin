@@ -9,10 +9,8 @@
                     }
                     h5 {
                         font-size: 16px;
-                        margin: {
-                            top: 20px;
-                            bottom: 11px;
-                        };
+                        margin-top: 20px;
+                        margin-bottom: 11px;
                     }
                 }
                 .buttons-list {
@@ -26,11 +24,9 @@
                             padding: 10px 15px 11px;
                             color: var(--primaryColor);
                             background: rgba(55, 97, 238, 0.10);
-                            font: {
-                                size: 14px;
-                                weight: 600;
-                                family: var(--headingFontFamily);
-                            };
+                            font-size: 14px;
+                            font-weight: 600;
+                            font-family: var(--headingFontFamily);
                             &:nth-child(2) {
                                 color: var(--whiteColor);
                                 background-color: var(--primaryColor);
@@ -83,19 +79,6 @@
             }
         }
     }
-    i-feather {
-        top: 15.5px;
-        left: -40px;
-        width: 25px;
-        line-height: 1;
-        position: absolute;
-        color: var(--blackColor);
-    }
-    .mat-mdc-form-field-bottom-align {
-        &::before {
-            display: none;
-        }
-    }
 }
 
 /* Max width 767px */
@@ -112,10 +95,8 @@
                         }
                         h5 {
                             font-size: 15px;
-                            margin: {
-                                top: 10px;
-                                bottom: 8px;
-                            };
+                            margin-top: 10px;
+                            margin-bottom: 8px;
                         }
                     }
                     .buttons-list {
@@ -150,10 +131,8 @@
                             height: 145px;
                         }
                         h5 {
-                            margin: {
-                                top: 15px;
-                                bottom: 9px;
-                            };
+                            margin-top: 15px;
+                            margin-bottom: 9px;
                         }
                     }
                     .buttons-list {

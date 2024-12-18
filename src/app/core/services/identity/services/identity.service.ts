@@ -68,4 +68,13 @@ export class IdentityService {
       .set('Authorization', `Bearer ${this.authService.getAccessToken()}`);
     return this.httpService.httpPost<any>(`${this.apiUrl}Profile/TwoFactorDisable`, {}, headers);
   }
+
+  refreshToken(refreshToken: string): Observable<SignInResponse> {
+    const headers = new HttpHeaders({
+        Accept: 'text/plain',
+        'Content-Type': 'application/json',
+    });
+    const body = { refreshToken };
+    return this.http.post<SignInResponse>(`${this.apiUrl}Account/RefreshToken`, body, { headers });
+  }
 }

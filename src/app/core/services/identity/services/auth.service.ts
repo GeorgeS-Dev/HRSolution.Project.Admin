@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private readonly ACCESS_TOKEN_KEY = 'accessToken';
+  onLogin = new EventEmitter<void>();
 
   constructor() {}
 
@@ -17,6 +18,7 @@ export class AuthService {
   // Set the access token
   setAccessToken(token: string): void {
     localStorage.setItem(this.ACCESS_TOKEN_KEY, token);
+    this.onLogin.emit(); // Emit the onLogin event
   }
 
   // Get the access token

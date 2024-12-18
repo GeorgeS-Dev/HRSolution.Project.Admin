@@ -9,7 +9,7 @@
         class="main-content transition d-flex flex-column"
         [ngClass]="{'active': isToggled}"
     >
-        <app-header *ngIf="!router.url.includes('/auth')" />
+        <app-header *ngIf="showHeader" />
         <router-outlet />
         <div class="flex-grow-1"></div>
         <app-footer />
