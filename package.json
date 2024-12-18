@@ -27,6 +27,7 @@
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",
     "@iplab/ngx-file-upload": "^18.0.0",
+    "@ngx-translate/core": "^16.0.3",
     "angular-feather": "^6.5.1",
     "angularx-qrcode": "^18.0.2",
     "apexcharts": "^4.0.0",

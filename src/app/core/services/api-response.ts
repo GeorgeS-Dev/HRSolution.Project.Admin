@@ -7,5 +7,5 @@ export interface ApiResponse<T> {
 
 export interface ApiError {
   message: string | null;
-  validation: string | null;
+  validation: { [key: string]: string } | null;
 }

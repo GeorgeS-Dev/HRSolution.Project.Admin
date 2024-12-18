@@ -19,6 +19,8 @@ import { IdentityService } from '../../../core/services/identity/services/identi
 import { AuthService } from '../../../core/services/auth.service';
 import { jwtDecode } from 'jwt-decode';
 import { jwtTokenClaims } from '../../../core/services/identity/models/jwtTokenClaims';
+import { SignInResponse } from '../../../core/services/identity/models/signInResponse';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-sign-in',
@@ -33,6 +35,7 @@ import { jwtTokenClaims } from '../../../core/services/identity/models/jwtTokenC
         MatCheckboxModule,
         ReactiveFormsModule,
         NgIf,
+        TranslateModule
     ],
     templateUrl: './sign-in.component.html',
     styleUrl: './sign-in.component.scss',
@@ -51,13 +54,26 @@ export class SignInComponent {
         public authService: AuthService,
         private fb: FormBuilder,
         private identityService: IdentityService,
-        private router: Router
+        private router: Router,
+        private translate: TranslateService
     ) {
-        this.authForm = this.fb.group({
+        this.authForm = this.createAuthForm();
+        this.twoFactorForm = this.createTwoFactorForm();
+    }
+
+    private createAuthForm(): FormGroup {
+        return this.fb.group({
             email: ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.required, Validators.minLength(8)]],
+            password: ['', [
+                Validators.required,
+                Validators.minLength(8),
+                Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z\\d]).+$')
+            ]],
         });
-        this.twoFactorForm = this.fb.group({
+    }
+
+    private createTwoFactorForm(): FormGroup {
+        return this.fb.group({
             twoFactorCode: [
                 '',
                 [
@@ -75,52 +91,64 @@ export class SignInComponent {
             const formData = this.authForm.value;
             this.errorMessage = "";
             this.identityService.signIn(formData).subscribe(
-                (data) => {
-                    if (data.accessToken) {
-                        this.authService.setAccessToken(data.accessToken);
-                        this.router.navigate(['/']);
-                    }
-
-                    if (data.twoFactors) {
-                        this.email = this.authForm.value.email;
-                        this.password = this.authForm.value.password;
-                        this.showTwoFactor = true;
-                    }
-                },
-                (error: ApiError) => {
-                    if (error.validation) {
-                        this.errorMessage = `Validation failed: ${error.validation}`;
-                    } else if (error.message) {
-                        this.errorMessage = `Login failed: ${error.message}`;
-                    } else {
-                        this.errorMessage = 'An unknown error occurred.';
-                    }
-                }
+                (data: SignInResponse) => this.handleSignInResponse(data),
+                (error: ApiError) => this.handleError(error)
             );
         }
     }
+
+    private handleSignInResponse(data: SignInResponse) {
+        if (data.accessToken) {
+            this.authService.setAccessToken(data.accessToken);
+            this.router.navigate(['/']);
+        }
+
+        if (data.twoFactors) {
+            this.email = this.authForm.value.email;
+            this.password = this.authForm.value.password;
+            this.showTwoFactor = true;
+        }
+    }
+
+    private handleError(error: ApiError) {
+        if (error.validation) {
+            this.setFormValidationErrors(error.validation);
+            this.errorMessage = this.translate.instant('VALIDATION_FAILED');
+        } else if (error.message) {
+            this.errorMessage = this.translate.instant('LOGIN_FAILED', { message: error.message });
+        } else {
+            this.errorMessage = this.translate.instant('UNKNOWN_ERROR');
+        }
+    }
+
+    private setFormValidationErrors(validationErrors: { [key: string]: string }) {
+        Object.keys(validationErrors).forEach(key => {
+            const control = this.authForm.get(key);
+            if (control) {
+                control.setErrors({ serverError: validationErrors[key] });
+            }
+        });
+    }
+
     onSubmitTwoFactor() {
         if (this.twoFactorForm.valid) {
             const code = this.twoFactorForm.value.twoFactorCode;
-
             this.identityService.confirmTwoFactorSignIn(this.email, this.password, code).subscribe(
-                (data) => {
-                    if (data) {
-                        this.authService.setAccessToken(data);
-                        this.router.navigate(['/']);
-                    }
-                },
-                (error: ApiError) => {
-                    this.showTwoFactor = false;
-                    if (error.validation) {
-                        this.errorMessage = `Validation failed: ${error.validation}`;
-                    } else if (error.message) {
-                        this.errorMessage = `Login failed: ${error.message}`;
-                    } else {
-                        this.errorMessage = 'An unknown error occurred.';
-                    }
-                }
+                (data: SignInResponse) => this.handleTwoFactorResponse(data),
+                (error: ApiError) => this.handleTwoFactorError(error)
             );
         }
+    }
+
+    private handleTwoFactorResponse(data: SignInResponse) {
+        if (data.accessToken) {
+            this.authService.setAccessToken(data.accessToken);
+            this.router.navigate(['/']);
+        }
+    }
+
+    private handleTwoFactorError(error: ApiError) {
+        this.showTwoFactor = false;
+        this.handleError(error);
     }
 }

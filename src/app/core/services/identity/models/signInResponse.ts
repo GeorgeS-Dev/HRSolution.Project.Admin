@@ -1,7 +1,9 @@
 import { TwoFactors } from "./twoFactors";
 
 export interface SignInResponse {
-  accessToken: string;
-  expires: Date;
-  twoFactors: TwoFactors[] | null;
+  accessToken?: string;
+  accessTokenExpires?: Date;
+  refreshToken?: string;
+  refreshTokenExpires?: Date;
+  twoFactors?: TwoFactors[] | null;
 }
