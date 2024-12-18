@@ -5,7 +5,7 @@ import { ToggleService } from '../header/toggle.service';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { FeathericonsModule } from '../../icons/feathericons/feathericons.module';
-import { AuthService } from '../../core/services/auth.service';
+import { AuthService } from '../../core/services/identity/services/auth.service';
 
 @Component({
     selector: 'app-sidebar',

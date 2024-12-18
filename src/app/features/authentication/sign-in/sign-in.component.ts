@@ -16,11 +16,12 @@ import { NgIf } from '@angular/common';
 import { ApiError } from '../../../core/services/api-response';
 import { TwoFactors } from '../../../core/services/identity/models/twoFactors';
 import { IdentityService } from '../../../core/services/identity/services/identity.service';
-import { AuthService } from '../../../core/services/auth.service';
+import { AuthService } from '../../../core/services/identity/services/auth.service';
 import { jwtDecode } from 'jwt-decode';
 import { jwtTokenClaims } from '../../../core/services/identity/models/jwtTokenClaims';
 import { SignInResponse } from '../../../core/services/identity/models/signInResponse';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ErrorHandlerService } from '../../../core/services/http/error-handler.service';
 
 @Component({
     selector: 'app-sign-in',
@@ -55,7 +56,8 @@ export class SignInComponent {
         private fb: FormBuilder,
         private identityService: IdentityService,
         private router: Router,
-        private translate: TranslateService
+        private translate: TranslateService,
+        private errorHandlerService: ErrorHandlerService
     ) {
         this.authForm = this.createAuthForm();
         this.twoFactorForm = this.createTwoFactorForm();
@@ -110,26 +112,6 @@ export class SignInComponent {
         }
     }
 
-    private handleError(error: ApiError) {
-        if (error.validation) {
-            this.setFormValidationErrors(error.validation);
-            this.errorMessage = this.translate.instant('VALIDATION_FAILED');
-        } else if (error.message) {
-            this.errorMessage = this.translate.instant('LOGIN_FAILED', { message: error.message });
-        } else {
-            this.errorMessage = this.translate.instant('UNKNOWN_ERROR');
-        }
-    }
-
-    private setFormValidationErrors(validationErrors: { [key: string]: string }) {
-        Object.keys(validationErrors).forEach(key => {
-            const control = this.authForm.get(key);
-            if (control) {
-                control.setErrors({ serverError: validationErrors[key] });
-            }
-        });
-    }
-
     onSubmitTwoFactor() {
         if (this.twoFactorForm.valid) {
             const code = this.twoFactorForm.value.twoFactorCode;
@@ -150,5 +132,9 @@ export class SignInComponent {
     private handleTwoFactorError(error: ApiError) {
         this.showTwoFactor = false;
         this.handleError(error);
+    }
+
+    private handleError(error: ApiError) {
+        this.errorMessage = this.errorHandlerService.handleError(error, this.authForm);
     }
 }

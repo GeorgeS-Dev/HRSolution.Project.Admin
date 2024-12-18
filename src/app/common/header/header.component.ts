@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FeathericonsModule } from '../../icons/feathericons/feathericons.module';
 import { Router, RouterLink } from '@angular/router';
 import { ToggleService } from './toggle.service';
-import { AuthService } from '../../core/services/auth.service';
+import { AuthService } from '../../core/services/identity/services/auth.service';
 import { TokenService } from '../../core/services/identity/services/token.service';
 import { jwtTokenClaims } from '../../core/services/identity/models/jwtTokenClaims';
 
