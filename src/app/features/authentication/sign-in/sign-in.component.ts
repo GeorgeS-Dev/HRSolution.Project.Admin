@@ -116,8 +116,14 @@ export class SignInComponent {
     }
 
     private handleSignInResponse(data: SignInResponse) {
+
+        if (data.twoFactors) {
+            this.email = this.authForm.value.email;
+            this.password = this.authForm.value.password;
+            this.showTwoFactor = true;
+        }
+
         if (data.accessToken) {
-            this.authService.setAccessToken(data.accessToken);
             this.tokenService.setToken(data.accessToken, data.accessTokenExpires, data.refreshToken, data.refreshTokenExpires); // Set the tokens in TokenService
             this.authService.onLogin.emit(); 
             this.snackBar.open(this.translate.instant('LOGIN_SUCCEEDED'), 'Close', {
@@ -127,12 +133,6 @@ export class SignInComponent {
                 verticalPosition: 'top',
             });
             this.router.navigate(['/']);
-        }
-
-        if (data.twoFactors) {
-            this.email = this.authForm.value.email;
-            this.password = this.authForm.value.password;
-            this.showTwoFactor = true;
         }
     }
 

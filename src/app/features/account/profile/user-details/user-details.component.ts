@@ -16,6 +16,7 @@ import { jwtTokenClaims } from '../../../../core/services/identity/models/jwtTok
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { TokenService } from '../../../../core/services/identity/services/token.service';
 import { NgIf } from '@angular/common';
+import { AuthService } from '../../../../core/services/identity/services/auth.service';
 
 @Component({
     selector: 'app-user-details',
@@ -41,7 +42,7 @@ export class UserDetailsComponent implements OnInit {
     userClaims: jwtTokenClaims | null = null;
     profileForm: FormGroup;
 
-    constructor(private injector: Injector, private fb: FormBuilder, private tokenService: TokenService) {
+    constructor(private injector: Injector, private fb: FormBuilder, private tokenService: TokenService, private authService: AuthService) {
         this.profileForm = this.fb.group({
             password: ['', 
                 [Validators.required, 
@@ -55,9 +56,17 @@ export class UserDetailsComponent implements OnInit {
                     this.passwordValidator],
             ],
         });
+
+        this.authService.onLogin.subscribe(() => {
+            this.loadUserClaims();
+        });
     }
 
     ngOnInit(): void {
+        this.loadUserClaims();
+    }
+
+    loadUserClaims(): void {
         const decodedToken = this.tokenService.getDecodedToken();
         if (decodedToken) {
             this.userClaims = decodedToken;

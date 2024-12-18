@@ -3,9 +3,12 @@ import { HttpClient, HttpHeaders, HttpRequest, HttpHandler, HttpEvent, HttpError
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { map, catchError, switchMap } from 'rxjs/operators';
 import { ApiResponse } from '../api-response';
-import { parseIdentityResponse, parseIdentityResponseError } from '../../helpers/identityResponseParser';
+import { parseIdentityResponse, parseIdentityResponseError } from '../../helpers/apiResponseParser';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SignInResponse } from '../identity/models/signInResponse';
+import { IdentityService } from '../identity/services/identity.service';
+import { Router } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -17,35 +20,37 @@ export class HttpService {
   private readonly REFRESH_TOKEN_EXPIRES_KEY = 'refreshTokenExpires';
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private readonly apiUrl = environment.identityServiceApiUrl;
 
   constructor(
     private http: HttpClient,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router
   ) {}
 
   httpPost<T>(url: string, body: any, headers: HttpHeaders): Observable<T> {
-    return this.http.post<ApiResponse<T>>(url, body, { headers }).pipe(
+    return this.http.post<any>(url, body, { headers }).pipe(
       map((response) => this.parseResponse<T>(response)),
       catchError((error) => this.handleError(error))
     );
   }
 
   httpGet<T>(url: string, headers: HttpHeaders, params?: any): Observable<T> {
-    return this.http.get<ApiResponse<T>>(url, { headers, params }).pipe(
+    return this.http.get<any>(url, { headers, params }).pipe(
       map((response) => this.parseResponse<T>(response)),
       catchError((error) => this.handleError(error))
     );
   }
 
   httpPut<T>(url: string, body: any, headers: HttpHeaders): Observable<T> {
-    return this.http.put<ApiResponse<T>>(url, body, { headers }).pipe(
+    return this.http.put<any>(url, body, { headers }).pipe(
       map((response) => this.parseResponse<T>(response)),
       catchError((error) => this.handleError(error))
     );
   }
 
   httpDelete<T>(url: string, headers: HttpHeaders): Observable<T> {
-    return this.http.delete<ApiResponse<T>>(url, { headers }).pipe(
+    return this.http.delete<any>(url, { headers }).pipe(
       map((response) => this.parseResponse<T>(response)),
       catchError((error) => this.handleError(error))
     );
@@ -68,15 +73,17 @@ export class HttpService {
               catchError((err) => {
                 this.isRefreshing = false;
                 this.removeToken();
+                this.router.navigate(['/auth/login']);
                 return throwError(err);
               })
             );
           } else {
             this.isRefreshing = false;
             this.removeToken();
-            return throwError(error);
+            this.router.navigate(['/auth/login']);
           }
         }
+        this.router.navigate(['/auth/login']);
         return throwError(error);
       })
     );
@@ -94,8 +101,14 @@ export class HttpService {
     return request;
   }
 
-  private parseResponse<T>(response: ApiResponse<T>): T {
-    return parseIdentityResponse<T>(response);
+  private parseResponse<T>(response: any): T {
+    if (response && response.status === 200 && !response.data) {
+      return {} as T;
+    }
+    if (response && response.data) {
+      return parseIdentityResponse<T>(response);
+    }
+    return response as T;
   }
 
   private handleError(error: any): Observable<never> {
@@ -122,13 +135,13 @@ export class HttpService {
     localStorage.removeItem(this.ACCESS_TOKEN_KEY);
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
   }
-
-  private refreshToken(refreshToken: string): Observable<SignInResponse> {
+  
+  refreshToken(refreshToken: string): Observable<SignInResponse> {
     const headers = new HttpHeaders({
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+        Accept: 'text/plain',
+        'Content-Type': 'application/json',
     });
     const body = { refreshToken };
-    return this.http.post<SignInResponse>('/api/refresh-token', body, { headers });
+    return this.http.post<SignInResponse>(`${this.apiUrl}Account/RefreshToken`, body, { headers });
   }
 }

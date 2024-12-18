@@ -45,6 +45,14 @@
         .mat-mdc-form-field-focus-overlay {
             display: none;
         }
+        .mat-mdc-text-field-wrapper {
+            border: 1px solid #ccc; /* Add border */
+            border-radius: 4px; /* Add border radius */
+            padding: 0 10px; /* Add padding */
+        }
+        .mat-mdc-form-field-flex {
+            padding: 10px 0; /* Add padding */
+        }
     }
     .mdc-text-field--filled {
         &:not(.mdc-text-field--disabled) {
@@ -57,11 +65,6 @@
                 color: var(--primaryColor) !important;
             }
         }
-    }
-    .mat-mdc-text-field-wrapper {
-        border-radius: 10px;
-        padding: 0 15px 0 60px;
-        border: 1px solid #f5f7fa;
     }
     .mat-mdc-icon-button {
         &.mat-mdc-button-base {

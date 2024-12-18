@@ -20,6 +20,9 @@ import { ApiError } from '../../../../core/services/api-response';
 import { QRCodeModule  } from 'angularx-qrcode';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, NgModel, NgModelGroup } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { SignInResponse } from '../../../../core/services/identity/models/signInResponse';
+import { AuthService } from '../../../../core/services/identity/services/auth.service';
 
 @Component({
     selector: 'app-profile-intro',
@@ -35,10 +38,19 @@ export class ProfileIntroComponent implements OnInit {
     constructor(
         private injector: Injector,
         public dialog: MatDialog,
-        private tokenService: TokenService
-    ) {}
+        private tokenService: TokenService,
+        private authService: AuthService // Add AuthService
+    ) {
+        this.authService.onLogin.subscribe(() => {
+            this.loadUserClaims();
+        });
+    }
 
     ngOnInit(): void {
+        this.loadUserClaims();
+    }
+
+    loadUserClaims(): void {
         const decodedToken = this.tokenService.getDecodedToken();
         if (decodedToken) {
             this.userClaims = decodedToken;
@@ -92,7 +104,7 @@ export class TwoFactorWarnDialog {
     templateUrl: './dialogs/twoFactorCodeDialog.html',
     styleUrl: './profile-intro.component.scss',
     standalone: true,
-    imports: [MatButtonModule, MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent, QRCodeModule, MatFormFieldModule, FormsModule, NgClass, NgIf ],
+    imports: [MatButtonModule, MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent, QRCodeModule, MatFormFieldModule, MatInputModule, FormsModule, NgClass, NgIf ],
 })
 export class TwoFactorCodeDialog {
 twoFactorString: string = "";
@@ -102,7 +114,9 @@ isCodeInvalid: boolean = false;
         public dialogRef: MatDialogRef<TwoFactorCodeDialog>,
         public dialog: MatDialog,
         private identityService: IdentityService,
-        @Inject(MAT_DIALOG_DATA) public data: string
+        @Inject(MAT_DIALOG_DATA) public data: string,
+        private tokenService: TokenService,
+        private authService: AuthService
     ) {
         this.twoFactorString = data;
     }
@@ -112,11 +126,22 @@ isCodeInvalid: boolean = false;
     validateCode() {
         this.identityService.twoFactorEnableConfirm(this.verificationCode).subscribe(
             () => {
-                this.dialog.closeAll();
-                this.dialog.open(TwoFactorCodeConfirmDialog, {
-                    width: '550px'
-                });
-                // Refresh user token after this
+                const refreshToken = this.tokenService.getRefreshToken();
+                if (refreshToken) {
+                    this.identityService.refreshToken(refreshToken).subscribe(
+                        (data: SignInResponse) => {
+                            this.tokenService.setToken(data.accessToken, data.accessTokenExpires, data.refreshToken, data.refreshTokenExpires); // Set the tokens in TokenService
+                            this.authService.onLogin.emit(); 
+                            this.dialog.closeAll();
+                            this.dialog.open(TwoFactorCodeConfirmDialog, {
+                                width: '550px'
+                            });
+                        },
+                        (error: ApiError) => {
+                            this.isCodeInvalid = true;
+                        }
+                    );
+                }
             },
             (error: ApiError) => {
                 this.isCodeInvalid = true;
@@ -152,14 +177,28 @@ hasError: boolean = false;
     constructor(
         public dialogRef: MatDialogRef<TwoFactorDisableDialog>,
         public dialog: MatDialog,
-        private identityService: IdentityService
+        private identityService: IdentityService,
+        private tokenService: TokenService,
+        private authService: AuthService
     ) {}
 
     DisableTwoFactor() : void {
 
         this.identityService.disableTwoFactor().subscribe(
             () => {
-                this.hasDisabled = true;
+                const refreshToken = this.tokenService.getRefreshToken();
+                if (refreshToken) {
+                    this.identityService.refreshToken(refreshToken).subscribe(
+                        (data: SignInResponse) => {
+                            console.log(data);
+                            this.tokenService.setToken(data.accessToken, data.accessTokenExpires, data.refreshToken, data.refreshTokenExpires); // Set the tokens in TokenService
+                            this.authService.onLogin.emit(); 
+                        },
+                        (error: ApiError) => {
+                            this.hasError = true;
+                        }
+                    );
+                }
             },
             (error: ApiError) => {
                 this.hasError = true;

@@ -75,6 +75,6 @@ export class IdentityService {
         'Content-Type': 'application/json',
     });
     const body = { refreshToken };
-    return this.http.post<SignInResponse>(`${this.apiUrl}Account/RefreshToken`, body, { headers });
+    return this.httpService.httpPost<SignInResponse>(`${this.apiUrl}Account/RefreshToken`, body, headers);
   }
 }
