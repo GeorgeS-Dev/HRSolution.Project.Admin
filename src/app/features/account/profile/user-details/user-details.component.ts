@@ -1,4 +1,4 @@
-import { Component, Injector } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { FeathericonsModule } from '../../../../icons/feathericons/feathericons.module';
 import {
@@ -35,28 +35,33 @@ import { NgIf } from '@angular/common';
     templateUrl: './user-details.component.html',
     styleUrl: './user-details.component.scss',
 })
-export class UserDetailsComponent {
+export class UserDetailsComponent implements OnInit {
     hide: boolean = true;
     hidere: boolean = true;
-    userClaims: jwtTokenClaims;
+    userClaims: jwtTokenClaims | null = null;
     profileForm: FormGroup;
 
-    constructor(private injector: Injector, private fb: FormBuilder) {
-        const tokenService = this.injector.get(TokenService);
-        this.userClaims = tokenService.getDecodedToken();
+    constructor(private injector: Injector, private fb: FormBuilder, private tokenService: TokenService) {
         this.profileForm = this.fb.group({
             password: ['', 
                 [Validators.required, 
-                    Validators.minLength(9),
+                    Validators.minLength(8),
                     this.passwordValidator]
                 ],
             repeatPassword: [
                 '',
                 [Validators.required,
-                    Validators.minLength(9), 
+                    Validators.minLength(8), 
                     this.passwordValidator],
             ],
         });
+    }
+
+    ngOnInit(): void {
+        const decodedToken = this.tokenService.getDecodedToken();
+        if (decodedToken) {
+            this.userClaims = decodedToken;
+        }
     }
 
     passwordValidator(control: AbstractControl): { [key: string]: boolean } | null {

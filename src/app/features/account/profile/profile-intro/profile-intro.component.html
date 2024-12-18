@@ -12,21 +12,21 @@
         <div class="user text-center">
             <img src="images/admin.jpg" class="rounded-circle" alt="user-image">
             <h5>
-                {{ userClaims.unique_name }}
+                {{ userClaims?.unique_name }}
             </h5>
             <span class="d-block text-body"  
-            [matTooltip]="userClaims.UserID"
+            [matTooltip]="userClaims?.UserID"
             matTooltipPosition="below">
-                {{ userClaims.role }}
+                {{ userClaims?.role }}
             </span>
         </div>
         <div 
         class="buttons-list d-flex align-items-center justify-content-center" 
         fxLayoutAlign="center center">
-        <a (click)="openDisableTwoFactorDialog()" class="default-btn text-bg-danger" mat-button *ngIf="userClaims.TwoFactorEnabled === 'true'">
+        <a (click)="openDisableTwoFactorDialog()" class="default-btn text-bg-danger" mat-button *ngIf="userClaims?.TwoFactorEnabled === 'true'">
             Deactivate 2FA
         </a>
-        <a (click)="openTwoFactorDialog()" class="default-btn text-bg-success" mat-button *ngIf="userClaims.TwoFactorEnabled === 'false'">
+        <a (click)="openTwoFactorDialog()" class="default-btn text-bg-success" mat-button *ngIf="userClaims?.TwoFactorEnabled === 'false'">
             Activate 2FA
         </a>
         </div>

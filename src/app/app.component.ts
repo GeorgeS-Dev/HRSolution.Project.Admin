@@ -8,11 +8,13 @@ import { ToggleService } from '../app/common/header/toggle.service';
 import { SidebarComponent } from './common/sidebar/sidebar.component';
 import { CommonModule, Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { RouterOutlet, Router, NavigationCancel, NavigationEnd, RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent],
+    imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent, TranslateModule],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
     providers: [
@@ -23,18 +25,20 @@ import { RouterOutlet, Router, NavigationCancel, NavigationEnd, RouterLink } fro
     ]
 })
 export class AppComponent {
-
     title = 'Trinta -  Angular 18 Material Design Admin Dashboard Template';
     routerSubscription: any;
     location: any;
 
-    constructor(
+    constructor(private translate: TranslateService,
         public router: Router,
         public toggleService: ToggleService,
         @Inject(PLATFORM_ID) private platformId: Object
-    ) {
+    ) { 
+        this.translate.addLangs(['de', 'en']);
+        this.translate.setDefaultLang('en');
+        this.translate.use('en');
         this.toggleService.isToggled$.subscribe(isToggled => {
-            this.isToggled = isToggled;
+        this.isToggled = isToggled;
         });
     }
 

@@ -17,10 +17,9 @@ import { ApiError } from '../../../core/services/api-response';
 import { TwoFactors } from '../../../core/services/identity/models/twoFactors';
 import { IdentityService } from '../../../core/services/identity/services/identity.service';
 import { AuthService } from '../../../core/services/identity/services/auth.service';
-import { jwtDecode } from 'jwt-decode';
-import { jwtTokenClaims } from '../../../core/services/identity/models/jwtTokenClaims';
 import { SignInResponse } from '../../../core/services/identity/models/signInResponse';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { ErrorHandlerService } from '../../../core/services/http/error-handler.service';
 
 @Component({
@@ -39,7 +38,7 @@ import { ErrorHandlerService } from '../../../core/services/http/error-handler.s
         TranslateModule
     ],
     templateUrl: './sign-in.component.html',
-    styleUrl: './sign-in.component.scss',
+    styleUrl: './sign-in.component.scss'
 })
 export class SignInComponent {
     hide: boolean = true;

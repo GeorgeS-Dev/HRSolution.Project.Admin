@@ -1,32 +1,66 @@
-import { jwtDecode } from 'jwt-decode';
+import { Injectable } from '@angular/core';
 import { jwtTokenClaims } from '../models/jwtTokenClaims';
-import { Injectable, Injector } from '@angular/core';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class TokenService {
-    private accessToken: string;
-    private decodedJWT: jwtTokenClaims;
+  private tokenKey = 'authToken';
+  private accessToken: string | null = null;
+  private decodedJWT: jwtTokenClaims | null = null;
 
-    constructor(private injector: Injector) {
-        this.accessToken = localStorage.getItem('accessToken') ?? "";
+  constructor() {
+    this.accessToken = this.getToken();
+    if (this.accessToken) {
+      try {
         this.decodedJWT = jwtDecode<jwtTokenClaims>(this.accessToken);
+      } catch (error) {
+        console.error('Invalid token specified:', error);
+        this.removeToken();
+      }
     }
+  }
 
-    getDecodedToken(): jwtTokenClaims {
-        return this.decodedJWT;
+  setToken(token: string): void {
+    localStorage.setItem(this.tokenKey, token);
+    this.accessToken = token;
+    try {
+      this.decodedJWT = jwtDecode<jwtTokenClaims>(token);
+    } catch (error) {
+      console.error('Invalid token specified:', error);
+      this.removeToken();
     }
+  }
 
-    getFirstName(): string {
-        return this.decodedJWT.FirstName;
-    }
+  getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
 
-    getId(): string {
-        return this.decodedJWT.UserID;
-    }
+  removeToken(): void {
+    localStorage.removeItem(this.tokenKey);
+    this.accessToken = null;
+    this.decodedJWT = null;
+  }
 
-    getRole(): string {
-        return this.decodedJWT.role;
-    }
+  isValidToken(token: string): boolean {
+    // Add your token validation logic here
+    return !!token;
+  }
+
+  getDecodedToken(): jwtTokenClaims | null {
+    return this.decodedJWT;
+  }
+
+  getFirstName(): string | null {
+    return this.decodedJWT ? this.decodedJWT.FirstName : null;
+  }
+
+  getId(): string | null {
+    return this.decodedJWT ? this.decodedJWT.UserID : null;
+  }
+
+  getRole(): string | null {
+    return this.decodedJWT ? this.decodedJWT.role : null;
+  }
 }

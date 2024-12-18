@@ -1,4 +1,4 @@
-import { Component, Inject, NgModule, Injector } from '@angular/core';
+import { Component, Inject, NgModule, Injector, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { RouterLink } from '@angular/router';
@@ -29,16 +29,20 @@ import { FormsModule, NgModel, NgModelGroup } from '@angular/forms';
     styleUrl: './profile-intro.component.scss'
 })
 
-export class ProfileIntroComponent {
-userClaims: jwtTokenClaims;
-TwoFAActive: boolean = false;
+export class ProfileIntroComponent implements OnInit {
+    userClaims: jwtTokenClaims | null = null;
 
     constructor(
         private injector: Injector,
-        public dialog: MatDialog
-    ) {
-        const tokenService = this.injector.get(TokenService);
-        this.userClaims = tokenService.getDecodedToken();
+        public dialog: MatDialog,
+        private tokenService: TokenService
+    ) {}
+
+    ngOnInit(): void {
+        const decodedToken = this.tokenService.getDecodedToken();
+        if (decodedToken) {
+            this.userClaims = decodedToken;
+        }
     }
 
     openTwoFactorDialog(): void {
