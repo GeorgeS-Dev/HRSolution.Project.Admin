@@ -101,17 +101,17 @@ export class SignInComponent {
             this.loadingService.show();
             const formData = this.authForm.value;
             this.errorMessage = "";
-            this.identityService.signIn(formData).subscribe(
-                (data: SignInResponse) => {
+            this.identityService.signIn(formData).subscribe({
+                next: (data: SignInResponse) => {
                     this.loadingService.hide();
                     this.handleSignInResponse(data);
                 },
-                (error: ApiError) => {
+                error: (error: ApiError) => {
                     this.loadingService.hide();
                     this.authForm.reset();
                     this.handleError(error);
                 }
-            );
+            });
         }
     }
 
@@ -124,7 +124,7 @@ export class SignInComponent {
         }
 
         if (data.accessToken) {
-            this.tokenService.setToken(data.accessToken, data.accessTokenExpires, data.refreshToken, data.refreshTokenExpires); // Set the tokens in TokenService
+            this.tokenService.setToken(data.accessToken, data.accessTokenExpires, data.refreshToken, data.refreshTokenExpires);
             this.authService.onLogin.emit(); 
             this.snackBar.open(this.translate.instant('LOGIN_SUCCEEDED'), 'Close', {
                 duration: 5000,
@@ -140,23 +140,23 @@ export class SignInComponent {
         if (this.twoFactorForm.valid) {
             this.loadingService.show();
             const code = this.twoFactorForm.value.twoFactorCode;
-            this.identityService.confirmTwoFactorSignIn(this.email, this.password, code).subscribe(
-                (data: SignInResponse) => {
+            this.identityService.confirmTwoFactorSignIn(this.email, this.password, code).subscribe({
+                next: (data: SignInResponse) => {
                     this.loadingService.hide();
                     this.handleTwoFactorResponse(data);
                 },
-                (error: ApiError) => {
+                error: (error: ApiError) => {
                     this.loadingService.hide();
                     this.handleTwoFactorError(error);
                 }
-            );
+            });
         }
     }
 
     private handleTwoFactorResponse(data: SignInResponse) {
         if (data.accessToken) {
             this.authService.setAccessToken(data.accessToken);
-            this.tokenService.setToken(data.accessToken, data.accessTokenExpires, data.refreshToken, data.refreshTokenExpires); // Set the tokens in TokenService
+            this.tokenService.setToken(data.accessToken, data.accessTokenExpires, data.refreshToken, data.refreshTokenExpires);
             this.authService.onLogin.emit(); 
             this.snackBar.open(this.translate.instant('LOGIN_SUCCEEDED'), 'Close', {
                 duration: 5000,

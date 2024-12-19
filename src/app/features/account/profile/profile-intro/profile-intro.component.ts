@@ -85,17 +85,17 @@ export class TwoFactorWarnDialog {
     ) {}
     confirm2FAActivation(): void {
         this.dialog.closeAll();
-        this.identityService.twoFactorEnableSend().subscribe(
-            (data) => {
+        this.identityService.twoFactorEnableSend().subscribe({
+            next: (data: string) => {
                 this.dialog.open(TwoFactorCodeDialog, {
                     width: '550px',
                     data: data
                 });
             },
-            (error: ApiError) => {
+            error: (error: ApiError) => {
                 // Show Unknown Error
             }
-        );
+        });
     }
 }
 
@@ -124,12 +124,12 @@ isCodeInvalid: boolean = false;
 
     }
     validateCode() {
-        this.identityService.twoFactorEnableConfirm(this.verificationCode).subscribe(
-            () => {
+        this.identityService.twoFactorEnableConfirm(this.verificationCode).subscribe({
+            next: () => {
                 const refreshToken = this.tokenService.getRefreshToken();
                 if (refreshToken) {
-                    this.identityService.refreshToken(refreshToken).subscribe(
-                        (data: SignInResponse) => {
+                    this.identityService.refreshToken(refreshToken).subscribe({
+                        next: (data: SignInResponse) => {
                             this.tokenService.setToken(data.accessToken, data.accessTokenExpires, data.refreshToken, data.refreshTokenExpires); // Set the tokens in TokenService
                             this.authService.onLogin.emit(); 
                             this.dialog.closeAll();
@@ -137,16 +137,16 @@ isCodeInvalid: boolean = false;
                                 width: '550px'
                             });
                         },
-                        (error: ApiError) => {
+                        error: (error: ApiError) => {
                             this.isCodeInvalid = true;
                         }
-                    );
+                    });
                 }
             },
-            (error: ApiError) => {
+            error: (error: ApiError) => {
                 this.isCodeInvalid = true;
             }
-        );
+        });
       }
 }
 
@@ -184,25 +184,25 @@ hasError: boolean = false;
 
     DisableTwoFactor() : void {
 
-        this.identityService.disableTwoFactor().subscribe(
-            () => {
+        this.identityService.disableTwoFactor().subscribe({
+            next: () => {
                 const refreshToken = this.tokenService.getRefreshToken();
                 if (refreshToken) {
-                    this.identityService.refreshToken(refreshToken).subscribe(
-                        (data: SignInResponse) => {
+                    this.identityService.refreshToken(refreshToken).subscribe({
+                        next: (data: SignInResponse) => {
                             console.log(data);
                             this.tokenService.setToken(data.accessToken, data.accessTokenExpires, data.refreshToken, data.refreshTokenExpires); // Set the tokens in TokenService
                             this.authService.onLogin.emit(); 
                         },
-                        (error: ApiError) => {
+                        error: (error: ApiError) => {
                             this.hasError = true;
                         }
-                    );
+                    });
                 }
             },
-            (error: ApiError) => {
+            error: (error: ApiError) => {
                 this.hasError = true;
             }
-        );
+        });
     }
 }
