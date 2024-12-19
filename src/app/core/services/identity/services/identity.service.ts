@@ -77,4 +77,17 @@ export class IdentityService {
     const body = { refreshToken };
     return this.httpService.httpPost<SignInResponse>(`${this.apiUrl}Account/RefreshToken`, body, headers);
   }
+
+  changePassword(currentPassword: string, password: string, confirmPassword: string): Observable<any> {
+    const body = {
+      currentPassword: currentPassword,
+      password: password,
+      confirmPassword: confirmPassword
+    };
+    const headers = new HttpHeaders({
+      'accept': 'text/plain',
+      'content-type': 'application/json'
+    });
+    return this.httpService.httpPost<any>(`${this.apiUrl}Profile/ChangePassword`, body, headers);
+  }
 }

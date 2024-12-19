@@ -12,7 +12,8 @@ enum IdentityExceptionCodeTypes
     Validation = 1800,
     CompanyNotFound = 1900,
     CompanySeatsTaken = 1901,
-    CompanyDisabled = 1902
+    CompanyDisabled = 1902,
+    InvalidPassword = 1903
 }
 
 export const IdentityExceptionMessages: { [key: number]: string } = {
@@ -29,4 +30,5 @@ export const IdentityExceptionMessages: { [key: number]: string } = {
     1900: "The company was not found.",
     1901: "All company seats are taken.",
     1902: "The company is disabled.",
+    1903: "Current Password Is Invalid.",
   };  

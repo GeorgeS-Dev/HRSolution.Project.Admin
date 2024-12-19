@@ -17,6 +17,12 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { TokenService } from '../../../../core/services/identity/services/token.service';
 import { NgIf } from '@angular/common';
 import { AuthService } from '../../../../core/services/identity/services/auth.service';
+import { IdentityService } from '../../../../core/services/identity/services/identity.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
+import { ApiError } from '../../../../core/services/api-response';
+import { LoadingService } from '../../../../core/services/loading.service';
+import { ErrorHandlerService } from '../../../../core/services/http/error-handler.service';
 
 @Component({
     selector: 'app-user-details',
@@ -39,11 +45,25 @@ import { AuthService } from '../../../../core/services/identity/services/auth.se
 export class UserDetailsComponent implements OnInit {
     hide: boolean = true;
     hidere: boolean = true;
+    hideCurrent: boolean = true;
     userClaims: jwtTokenClaims | null = null;
     profileForm: FormGroup;
 
-    constructor(private injector: Injector, private fb: FormBuilder, private tokenService: TokenService, private authService: AuthService) {
+    constructor(private injector: Injector, 
+        private fb: FormBuilder, 
+        private tokenService: TokenService, 
+        private authService: AuthService,
+        private identityService: IdentityService,
+        private snackBar: MatSnackBar,
+        private translate: TranslateService,
+        private loadingService: LoadingService,
+        private errorHandlerService: ErrorHandlerService) {
         this.profileForm = this.fb.group({
+            currentPassword: ['', 
+                [Validators.required, 
+                    Validators.minLength(8),
+                    this.passwordValidator]
+                ],
             password: ['', 
                 [Validators.required, 
                     Validators.minLength(8),
@@ -81,6 +101,26 @@ export class UserDetailsComponent implements OnInit {
 
     onSubmit() {
         if (this.profileForm.valid) {
+            this.loadingService.show();
+            const currentPassword = this.profileForm.get('currentPassword')!.value;
+            const password = this.profileForm.get('password')!.value;
+            const confirmPassword = this.profileForm.get('repeatPassword')!.value;
+
+            this.identityService.changePassword(currentPassword, password, confirmPassword).subscribe(
+                () => {
+                    this.snackBar.open(this.translate.instant('PASSWORDCHANGE_SUCCEEDED'), 'Close', {
+                        duration: 5000,
+                        panelClass: ['snackbar-success'],
+                        horizontalPosition: 'left',
+                        verticalPosition: 'top',
+                    });
+                    this.loadingService.hide();
+                },
+                (error : ApiError) => {
+                    this.loadingService.hide();
+                    this.errorHandlerService.handleError(error, this.profileForm);
+                }
+            );
         }
     }
 }

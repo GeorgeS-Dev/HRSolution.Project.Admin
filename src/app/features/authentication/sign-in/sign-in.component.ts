@@ -175,6 +175,6 @@ export class SignInComponent {
     }
 
     private handleError(error: ApiError) {
-        //this.errorMessage = this.errorHandlerService.handleError(error, this.authForm);
+        this.errorHandlerService.handleError(error, this.authForm);
     }
 }
